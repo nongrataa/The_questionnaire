@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Добавление опроса</h1>
+<form action="/add_question/" method="post">
+    {{ form_question.as_p }}
+    {{ form_chois.as_p }}
+    {{ form_chois.as_p }}
+    <input type="submit" value="OK">
+</form>
+
+        <form id="form" method="POST" action="save_data.php">
+            <input type="text" name="text_field[]">
+            <button type="submit">SUBMIT</button>
+        </form>
+        <button onclick="add_field()">ADD FIELD</button>
+        <script>
+            function add_field(){
+
+                var x = document.getElementById("form");
+                // создаем новое поле ввода
+                var new_field = document.createElement("input");
+                // установим для поля ввода тип данных 'text'
+                new_field.setAttribute("type", "text");
+                // установим имя для поля ввода
+                new_field.setAttribute("name", "text_field[]");
+                // определим место вствки нового поля ввода (перед каким элементом его вставить)
+                var pos = x.childElementCount;
+
+                // добавим поле ввода в форму
+                x.insertBefore(new_field, x.childNodes[pos]);
+            }
+        </script>
+</body>
+</html>

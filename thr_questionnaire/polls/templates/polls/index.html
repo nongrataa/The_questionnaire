@@ -1,10 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
 </head>
 <body>
+<li><a href="{% url 'add_question' %}">Добавить вопрос</a></li>
 {% if latest_question_list %}
     <ul>
     {% for question in latest_question_list %}
