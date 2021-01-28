@@ -6,34 +6,82 @@
 </head>
 <body>
 <h1>Добавление опроса</h1>
-<form action="/add_question/" method="post">
-    {{ form_question.as_p }}
-    {{ form_chois.as_p }}
-    {{ form_chois.as_p }}
+<form action="{% url 'add_question' %}" method="post">
+    {% csrf_token %}
+    <p>
+        <label for="id_question_text">Question text:</label>
+        <input type="text" name="question_text" maxlength="200" required="" id="id_question_text">
+    </p>
+    <p>
+        <label for="id_pub_date">Дата публикации:</label>
+        <input type="text" name="pub_date" required="" id="id_pub_date">
+    </p>
+    <p>
+        <label for="id_author">Author:</label>
+        <select name="author" required="" id="id_author">
+              <option value="">---------</option>
+              <option value="1" selected="">admin</option>
+        </select>
+    </p>
+    <p>
+        <label for="id_url">Url:</label>
+        <input type="text" name="url" value="terminator6" maxlength="50" required="" id="id_url">
+    </p>
+    <p>
+        <label for="id_published">Опубликовать?</label>
+        <input type="checkbox" name="published" id="id_published" checked="">
+    </p>
+    <p>
+        <label for="id_url_access">Доступ к опросу по ссылке:</label>
+        <input type="checkbox" name="url_access" id="id_url_access">
+    </p>
+    <p>
+        <label for="id_question">Question:</label>
+        <select name="question" required="" id="id_question">
+              <option value="" selected="">---------</option>
+            {% for select in question %}
+              <option value={{ select.id }}>{{ select.question_text }}</option>
+            {% endfor %}
+
+        </select>
+    </p>
+    <p>
+        <label for="id_choice_text">Choice text:</label>
+        <input type="text" name="choice_text" maxlength="200" required="" id="id_choice_text">
+    </p>
     <input type="submit" value="OK">
 </form>
 
-        <form id="form" method="POST" action="save_data.php">
-            <input type="text" name="text_field[]">
-            <button type="submit">SUBMIT</button>
-        </form>
-        <button onclick="add_field()">ADD FIELD</button>
-        <script>
-            function add_field(){
 
-                var x = document.getElementById("form");
-                // создаем новое поле ввода
-                var new_field = document.createElement("input");
-                // установим для поля ввода тип данных 'text'
-                new_field.setAttribute("type", "text");
-                // установим имя для поля ввода
-                new_field.setAttribute("name", "text_field[]");
-                // определим место вствки нового поля ввода (перед каким элементом его вставить)
-                var pos = x.childElementCount;
+<!--<form action="{% url 'add_question' %}" method="post">-->
+<!--    {% csrf_token %}-->
+<!--    {{ form_question.as_p }}-->
+<!--    {{ form_chois.as_p }}-->
+<!--    {{ form_chois.as_p }}-->
+<!--    <input type="submit" value="OK">-->
+<!--</form>-->
 
-                // добавим поле ввода в форму
-                x.insertBefore(new_field, x.childNodes[pos]);
-            }
-        </script>
+<!--        <form id="form" method="POST" action="save_data.php">-->
+<!--            <input type="text" name="text_field[]">-->
+<!--            <button type="submit">SUBMIT</button>-->
+<!--        </form>-->
+<!--        <button onclick="add_field()">ADD FIELD</button>-->
+<!--        <script>-->
+<!--            function add_field(){-->
+
+<!--                var x = document.getElementById("form");-->
+<!--                // создаем новое поле ввода-->
+<!--                var new_field = document.createElement("input");-->
+<!--                // установим для поля ввода тип данных 'text'-->
+<!--                new_field.setAttribute("type", "text");-->
+<!--                // установим имя для поля ввода-->
+<!--                new_field.setAttribute("name", "text_field[]");-->
+<!--                // определим место вствки нового поля ввода (перед каким элементом его вставить)-->
+<!--                var pos = x.childElementCount;-->
+
+<!--                // добавим поле ввода в форму-->
+<!--                x.insertBefore(new_field, x.childNodes[pos]);-->
+<!--            }-->
+<!--        </script>-->
 </body>
 </html>

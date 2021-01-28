@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, loader, reverse
+from django.shortcuts import render, get_object_or_404, loader, reverse, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from .models import *
@@ -65,10 +65,29 @@ def vote(request, question_id):
 
 
 def add_question(request):
-    form_question = AddQuestionForm()
-    form_chois = ChoisForm()
-    context = {
-        'form_question': form_question,
-        'form_chois': form_chois
-    }
+
+    if request.method == 'POST':
+        question = Question.objects.all()
+
+        form_question = AddQuestionForm(request.POST)
+        form_chois = ChoisForm(request.POST)
+
+        if form_question.is_valid() and form_chois.is_valid():
+
+            form_question.save()
+            form_chois.save()
+            return redirect('index')
+
+        else:
+            context = {
+                'form_question': form_question,
+                'form_chois': form_chois,
+                'question': question,
+            }
+
+    else:
+        context = {
+            'form_question': AddQuestionForm(),
+            'form_chois': ChoisForm(),
+        }
     return render(request, 'polls/add_question.html', context)

@@ -11,4 +11,4 @@ class AddQuestionForm(forms.ModelForm):
 class ChoisForm(forms.ModelForm):
     class Meta:
         model = Chois
-        fields = ['question', 'choice_text']
+        fields = ['question', 'choice_text', ]
