@@ -7,11 +7,29 @@
     <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
 </head>
 <body>
+
+<a href="{% url 'register' %}">Регистрация</a>
+{% if request.user.is_authenticated %}
+    <h3>Вы вошли как - {{user.username}}</h3>
+    <a href="{% url 'user_logout' %}">Выход</a>
+{% else %}
+    <a href="{% url 'user_login' %}">Вход</a>
+{% endif %}
+<p></p>
+{% if request.user.is_authenticated %}
+<li><a href="{% url 'my_questions' %}">Мои вопросы</a></li>
+{% endif %}
+<p></p>
+{% if request.user.is_authenticated %}
 <li><a href="{% url 'add_question' %}">Добавить вопрос</a></li>
+{% endif %}
 {% if latest_question_list %}
     <ul>
     {% for question in latest_question_list %}
-        <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+        <div>
+            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+            <a href="{% url 'user_questions' question.author.id %}">{{ question.author }}</a>
+        </div>
     {% endfor %}
     </ul>
 {% else %}

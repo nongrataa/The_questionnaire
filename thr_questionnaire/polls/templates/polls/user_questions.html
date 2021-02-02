@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Вопросы пользователя {{ author }}</h1>
+{% for question in user_questions %}
+    <h3>{{ question.question_text }}</h3>
+{% endfor %}
+</body>
+</html>

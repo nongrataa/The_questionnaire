@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if messages %}
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+{% endif %}
+<!--<form action="" method="POST">-->
+<!--    {% csrf_token %}-->
+<!--    {{ form.as_p }}-->
+<!--    <button type="submit">Регистрация</button>-->
+<!--</form>-->
+<form action="" method="POST">
+    {% csrf_token %}
+    <p>
+        <label for="id_username">Имя пользователя:</label>
+        <input type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus="" required="" id="id_username">
+        <span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+    </p>
+    <p><label for="id_email">Email:</label>
+        <input type="email" name="email" maxlength="150" id="id_email">
+        <span class="helptext"></span>
+    </p>
+    <p>
+        <label for="id_password1">Пароль:</label>
+        <input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
+        <span class="helptext"></span>
+    </p>
+    <ul>
+        <li>Your password can’t be too similar to your other personal information.</li>
+        <li>Your password must contain at least 8 characters.</li><li>Your password can’t be a commonly used password.</li>
+        <li>Your password can’t be entirely numeric.</li>
+    </ul>
+    <p>
+
+    </p>
+    <p>
+        <label for="id_password2">Повторите пароль:</label>
+        <input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
+        <span class="helptext">Enter the same password as before, for verification.</span>
+    </p>
+    <button type="submit">Регистрация</button>
+</form>
+</body>
+</html>

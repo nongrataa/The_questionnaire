@@ -14,16 +14,12 @@
         <label for="id_question_text">Question text:</label>
         <input type="text" name="question_text" maxlength="200" required="" id="id_question_text">
     </p>
+<!--    <p>-->
+<!--        <label for="id_pub_date">Дата публикации:</label>-->
+<!--        <input type="text" name="pub_date" required="" id="id_pub_date">-->
+<!--    </p>-->
     <p>
-        <label for="id_pub_date">Дата публикации:</label>
-        <input type="text" name="pub_date" required="" id="id_pub_date">
-    </p>
-    <p>
-        <label for="id_author">Author:</label>
-        <select name="author" required="" id="id_author">
-              <option value="">---------</option>
-              <option value="1" selected="">admin</option>
-        </select>
+        <input type="hidden" name="author" value="{{ request.user.id }}" required="" id="id_author">
     </p>
     <p>
         <label for="id_url">Url:</label>

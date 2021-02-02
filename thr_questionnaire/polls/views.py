@@ -3,7 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from .models import *
 from .forms import *
-from django.forms import modelformset_factory, inlineformset_factory
+from django.forms import inlineformset_factory
+from django.contrib.auth import login, logout
+from django.contrib import messages
 
 # Create your views here.
 
@@ -65,6 +67,7 @@ def vote(request, question_id):
 
 def add_question(request):
     if request.method == 'POST':
+        print(request.user.username)
         question = Question.objects.all()
         form_question = AddQuestionForm(request.POST)
         if form_question.is_valid():
@@ -105,3 +108,59 @@ def add_choice(request, pk):
         'formset': formset
     }
     return render(request, 'polls/add_choice.html', context)
+
+
+def my_questions(request):
+    user = request.user.id
+    question = Question.objects.filter(author=user)
+    context = {
+        "my_questions": question
+    }
+    return render(request, 'polls/myquestions.html', context)
+
+
+def user_questions(request, userid):
+    question = Question.objects.filter(author=userid, url_access=False)
+    author = User.objects.get(pk=userid)
+    print('author - ', author)
+    context = {
+        "user_questions": question,
+        "author": author,
+    }
+    return render(request, 'polls/user_questions.html', context)
+
+
+def register(request):
+    if request.method == "POST":
+        register_form = UserRegisterForm(request.POST)
+        if register_form.is_valid():
+            user = register_form.save()
+            messages.success(request, 'Вы успешно зарегистировались')
+            login(request, user)
+            return redirect('index')
+    else:
+        register_form = UserRegisterForm()
+    context = {
+        'form': register_form
+    }
+    return render(request, 'polls/register.html', context)
+
+
+def user_login(request):
+    if request.method == "POST":
+        login_form = UserLoginForm(data=request.POST)
+        if login_form.is_valid():
+            user = login_form.get_user()
+            login(request, user)
+            return redirect('index')
+    else:
+        login_form = UserLoginForm()
+    context = {
+        "login_form": login_form,
+    }
+    return render(request, 'polls/login.html', context)
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('index')

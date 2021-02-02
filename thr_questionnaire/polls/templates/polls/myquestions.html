@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Мои вопросы</h1>
+{% for my_question in my_questions %}
+    <p>{{ my_question.question_text }}</p>
+{% endfor %}
+</body>
+</html>
