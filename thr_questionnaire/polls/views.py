@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from .models import *
 from .forms import *
-from django.forms import inlineformset_factory
+from django.forms import modelformset_factory, inlineformset_factory
 
 # Create your views here.
 
@@ -53,7 +53,6 @@ def vote(request, question_id):
     try:
         selected_choice = question.chois_set.get(pk=request.POST['choice'])
     except (KeyError, Chois.DoesNotExist):
-        # Redisplay the question voting form.
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
@@ -65,29 +64,44 @@ def vote(request, question_id):
 
 
 def add_question(request):
-
     if request.method == 'POST':
         question = Question.objects.all()
-
         form_question = AddQuestionForm(request.POST)
-        form_chois = ChoisForm(request.POST)
-
-        if form_question.is_valid() and form_chois.is_valid():
-
-            form_question.save()
-            form_chois.save()
-            return redirect('index')
-
+        if form_question.is_valid():
+            quest = form_question.save()
+            return redirect('add_choice', pk=quest.id)
         else:
             context = {
                 'form_question': form_question,
-                'form_chois': form_chois,
                 'question': question,
             }
-
     else:
         context = {
             'form_question': AddQuestionForm(),
-            'form_chois': ChoisForm(),
         }
     return render(request, 'polls/add_question.html', context)
+
+
+def add_choice(request, pk):
+    button = request.POST.get('save_add')
+    if button == '':
+        question = Question.objects.get(pk=pk)
+        ChoiceFormset = inlineformset_factory(Question, Chois, fields=('choice_text',))
+        if request.method == 'POST':
+            formset = ChoiceFormset(request.POST, instance=question)
+            if formset.is_valid():
+                formset.save()
+                return redirect('add_choice', pk=question.id)
+    else:
+        question = Question.objects.get(pk=pk)
+        ChoiceFormset = inlineformset_factory(Question, Chois, fields=('choice_text',))
+        if request.method == 'POST':
+            formset = ChoiceFormset(request.POST, instance=question)
+            if formset.is_valid():
+                formset.save()
+                return redirect('index')
+    formset = ChoiceFormset(instance=question)
+    context = {
+        'formset': formset
+    }
+    return render(request, 'polls/add_choice.html', context)

@@ -1,7 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
     <title>Title</title>
 </head>
 <body>
@@ -35,20 +37,20 @@
         <label for="id_url_access">Доступ к опросу по ссылке:</label>
         <input type="checkbox" name="url_access" id="id_url_access">
     </p>
-    <p>
-        <label for="id_question">Question:</label>
-        <select name="question" required="" id="id_question">
-              <option value="" selected="">---------</option>
-            {% for select in question %}
-              <option value={{ select.id }}>{{ select.question_text }}</option>
-            {% endfor %}
+<!--    <p>-->
+<!--        <label for="id_question">Question:</label>-->
+<!--        <select name="question" required="" id="id_question">-->
+<!--              <option value="" selected="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+<!--            {% for select in question %}-->
+<!--              <option value={{ select.id }}>{{ select.question_text }}</option>-->
+<!--            {% endfor %}-->
 
-        </select>
-    </p>
-    <p>
-        <label for="id_choice_text">Choice text:</label>
-        <input type="text" name="choice_text" maxlength="200" required="" id="id_choice_text">
-    </p>
+<!--        </select>-->
+<!--    </p>-->
+<!--    <p>-->
+<!--        <label for="id_choice_text">Choice text:</label>-->
+<!--        <input type="text" name="choice_text" maxlength="200" required="" id="id_choice_text">-->
+<!--    </p>-->
     <input type="submit" value="OK">
 </form>
 
