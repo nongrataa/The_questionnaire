@@ -19,7 +19,8 @@ urlpatterns = [
     path('my_questions/', my_questions, name='my_questions'),
     path('user_questions/<int:userid>/', user_questions, name='user_questions'),
     path('add_choice/<int:pk>/', add_choice, name='add_choice'),
-    path('<int:pk>/', DetailView.as_view(), name='detail'),
+    # path('<int:pk>/', DetailView.as_view(), name='detail'),
+    path('<int:pk>/', detail, name='detail'),
     path('<int:pk>/result/', ResultsView.as_view(), name='result'),
     path('<int:question_id>/vote/', vote, name='vote'),
 ]

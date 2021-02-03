@@ -10,7 +10,7 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    url = models.CharField(max_length=50)
+    url = models.CharField(max_length=50, blank=True)
     published = models.BooleanField(default=False, verbose_name='Опубликовать?')
     url_access = models.BooleanField(default=False, verbose_name='Доступ к опросу только по ссылке')
 

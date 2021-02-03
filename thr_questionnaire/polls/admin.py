@@ -12,6 +12,7 @@ class ChoisInline(admin.TabularInline):
 class QuestionAdmin(admin.ModelAdmin):
     # fields = ['pub_date', 'question_text']
     list_display = ('question_text', 'pub_date')
+    prepopulated_fields = {"url": ("question_text",)}
     fieldsets = [
         (None, {'fields': ['question_text', 'published', 'url_access']}),
         ('Information', {'fields': ['author', 'url']}),

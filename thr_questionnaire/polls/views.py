@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, loader, reverse, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
+from django.views.generic.base import View
+from transliterate import translit, get_available_language_codes
 from .models import *
 from .forms import *
 from django.forms import inlineformset_factory
@@ -39,40 +41,91 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return Question.objects.order_by('-pub_date')
 
+#
+# class DetailView(generic.DetailView):
+#     model = Question
+#     template_name = 'polls/detail.html'
+#
+#     def get_queryset(self):
+#         return Question.objects.filter(pk=self.kwargs['pk'])
+#
+#     def get_question(self):
+#         user = self.request.user.id
+#         choise = Chois.objects.filter(question=self.kwargs['pk'])
+#         resp_list = []
+#         for resp in choise:
+#             for i in resp.respondent.split(' '):
+#                 resp_list.append(i)
+#         if str(user) in resp_list:
+#             return redirect('result', self.get_queryset.id)
+#         else:
+#             context = {
+#                 'question': self.get_queryset()
+#             }
+#             return render(self.request, 'polls/detail.html', context)
 
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'polls/detail.html'
+
+def detail(request, pk):
+    user = request.user.id
+    choise = Chois.objects.filter(question=pk)
+    resp_list = []
+    for resp in choise:
+        for i in resp.respondent.split(' '):
+            resp_list.append(i)
+    if str(user) in resp_list:
+        return redirect('result', pk)
+    else:
+        question = get_object_or_404(Question, pk=pk)
+        context = {
+            'question': question
+        }
+        return render(request, 'polls/detail.html', context)
 
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/result.html'
 
-
+# Тут возможно стоит переделать
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.chois_set.get(pk=request.POST['choice'])
+        print('select_choise', selected_choice)
     except (KeyError, Chois.DoesNotExist):
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
         })
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('result', args=(question.id,)))
+        user = request.user.id
+        choise = Chois.objects.filter(question=question_id)
+        resp_list = []
+        for resp in choise:
+            for i in resp.respondent.split(' '):
+                resp_list.append(i)
+        if str(user) in resp_list:
+            print('True')
+            return HttpResponse("Вы уже голосовали")
+        else:
+            selected_choice.votes += 1
+            selected_choice.respondent += ' ' + str(request.user.id)
+            selected_choice.save()
+            return HttpResponseRedirect(reverse('result', args=(question.id,)))
 
 
 def add_question(request):
     if request.method == 'POST':
-        print(request.user.username)
         question = Question.objects.all()
         form_question = AddQuestionForm(request.POST)
         if form_question.is_valid():
-            quest = form_question.save()
-            return redirect('add_choice', pk=quest.id)
+            # тут мы меняем поле формы URL что бы в каждом вопросе оно менялось,
+            # возможно стоит написать функцию для транслитерации текста
+            new_form = form_question.save(commit=False)
+            url = form_question.cleaned_data['url']
+            new_form.url = str(request.user.id) + str(len(question))
+            new_form.save()
+            return redirect('add_choice', pk=new_form.id)
         else:
             context = {
                 'form_question': form_question,
