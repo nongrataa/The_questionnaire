@@ -38,8 +38,23 @@ class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
+    #Выводим только те вопросы на которые не отвечали
     def get_queryset(self):
-        return Question.objects.order_by('-pub_date')
+        user = self.request.user.id
+        question = Question.objects.all()
+        resp_list = []
+        for resp in question:
+            if str(user) not in resp.respondent.split(' '):
+                resp_list.append(resp.id)
+        return Question.objects.filter(pk__in=resp_list)
+
+
+class IndexView2(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_question_list'
+
+    def get_queryset(self):
+        return Chois.objects.order_by('question')
 
 #
 # class DetailView(generic.DetailView):
@@ -88,30 +103,37 @@ class ResultsView(generic.DetailView):
 
 # Тут возможно стоит переделать
 def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.chois_set.get(pk=request.POST['choice'])
-        print('select_choise', selected_choice)
-    except (KeyError, Chois.DoesNotExist):
-        return render(request, 'polls/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
+    print('request.user.id', request.user.id)
+    if request.user.id == None:
+        return redirect('register')
     else:
-        user = request.user.id
-        choise = Chois.objects.filter(question=question_id)
-        resp_list = []
-        for resp in choise:
-            for i in resp.respondent.split(' '):
-                resp_list.append(i)
-        if str(user) in resp_list:
-            print('True')
-            return HttpResponse("Вы уже голосовали")
+        question = get_object_or_404(Question, pk=question_id)
+        try:
+            selected_choice = question.chois_set.get(pk=request.POST['choice'])
+            selected_question = question
+            print('select_choise', selected_choice)
+        except (KeyError, Chois.DoesNotExist):
+            return render(request, 'polls/detail.html', {
+                'question': question,
+                'error_message': "You didn't select a choice.",
+            })
         else:
-            selected_choice.votes += 1
-            selected_choice.respondent += ' ' + str(request.user.id)
-            selected_choice.save()
-            return HttpResponseRedirect(reverse('result', args=(question.id,)))
+            user = request.user.id
+            choise = Chois.objects.filter(question=question_id)
+            resp_list = []
+            for resp in choise:
+                for i in resp.respondent.split(' '):
+                    resp_list.append(i)
+            if str(user) in resp_list:
+                print('True')
+                return HttpResponse("Вы уже голосовали")
+            else:
+                selected_choice.votes += 1
+                selected_choice.respondent += ' ' + str(request.user.id)
+                selected_question.respondent += ' ' + str(request.user.id)
+                selected_choice.save()
+                selected_question.save()
+                return HttpResponseRedirect(reverse('result', args=(question.id,)))
 
 
 def add_question(request):

@@ -10,32 +10,6 @@
 <body>
 <div class="container-fluid">
 	<!--Нав бар -->
-    <!--<div class="row">
-		<div class="col-md-12">
-			<ul class="nav justify-content-end">
-                {% if request.user.is_authenticated %}
-                      <p>Вы вошли как - {{user.username}}</p>
-                      <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'add_question' %}">Добавить вопрос</a>
-                      </li>
-                      <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'my_questions' %}">Мои вопросы</a>
-                      </li>
-                      <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_logout' %}">Выход</a>
-                      </li>
-                {% else %}
-                      <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
-                      </li>
-                      <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_login' %}">Вход</a>
-                      </li>
-                {% endif %}
-            </ul>
-		</div>
-	</div>-->
-
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
         <h5 class="my-0 mr-md-auto font-weight-normal">Questionnaire</h5>
         <p class="my-0  text-dark">Вы вошли как - {{user.username}}</p>
@@ -63,8 +37,16 @@
                     <p>
                     </p>
                     <p>{{ question.author }}</p>
+                    <form action="{% url 'vote' question.id %}" method="post">
+                        {% csrf_token %}
+                        {% for choice in question.chois_set.all %}
+                            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+                        {% endfor %}
+                        <input type="submit" value="Vote">
+                    </form>
                     <p>
-                        <a class="btn" href="{% url 'detail' question.id %}">View details »</a>
+<!--                        <a class="btn" href="{% url 'detail' question.id %}">View details »</a>-->
                     </p>
                 </div>
             {% endfor %}

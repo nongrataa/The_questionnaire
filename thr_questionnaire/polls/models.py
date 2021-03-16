@@ -13,6 +13,7 @@ class Question(models.Model):
     url = models.CharField(max_length=50, blank=True)
     published = models.BooleanField(default=False, verbose_name='Опубликовать?')
     url_access = models.BooleanField(default=False, verbose_name='Доступ к опросу только по ссылке')
+    respondent = models.TextField(blank=True)
 
     def __str__(self):
         return self.question_text

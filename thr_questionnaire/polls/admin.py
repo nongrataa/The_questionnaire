@@ -15,7 +15,7 @@ class QuestionAdmin(admin.ModelAdmin):
     prepopulated_fields = {"url": ("question_text",)}
     fieldsets = [
         (None, {'fields': ['question_text', 'published', 'url_access']}),
-        ('Information', {'fields': ['author', 'url']}),
+        ('Information', {'fields': ['author', 'url', 'respondent']}),
     ]
     inlines = [ChoisInline]
     list_filter = ['pub_date']
